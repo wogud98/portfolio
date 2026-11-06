@@ -215,6 +215,9 @@ details[open] summary::before{content:"−"}
 .pg .ah{fill:var(--muted)}
 .pg .el{fill:var(--muted);font:12px var(--sans);text-anchor:middle}
 .pts{margin-top:14px}
+.redo td:first-child{white-space:nowrap;font-weight:600}
+.redo td{line-height:1.8}
+.why-t{color:var(--muted);font-size:12.5px}
 .flow{list-style:none;padding:0;margin:8px 0 16px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .flow li{position:relative;border:1px solid var(--line);border-radius:8px;padding:10px 11px;font-size:13px;background:var(--bg)}
 .flow li b{display:block;font-size:13.5px}
@@ -344,7 +347,7 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
         <li>장소 주변 아파트의 실거래가를 지도에 표시하는 서비스</li>
         <li>3계층 구조(Controller–Service–Mapper)로 REST API 14개 구현</li>
         <li>거리 계산 SQL로 반경 안의 아파트 조회, 페이징 처리</li>
-        <li>JWT 로그인, 인증 실패 시 401 응답</li>
+        <li>JWT 발급 로그인, 로그인 실패 시 401 응답</li>
       </ul>
       <a class="more" href="https://github.com/wogud98/Where-is-my-home" target="_blank" rel="noopener">GitHub 저장소 →</a>
       
@@ -406,6 +409,12 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
             <div><dt>DB 필터</dt><dd>반경 밖 데이터는 DB에서 걸러 애플리케이션으로 가져오지 않음</dd></div>
             <div><dt>페이징</dt><dd>LIMIT으로 한 페이지 분량만 조회, COUNT로 전체 건수를 구해 페이지 수 계산</dd></div>
           </dl></div>
+        <div class="dblock span2"><h4>다시 설계한다면</h4>
+          <div class="tbl"><table class="redo"><thead><tr><th>영역</th><th>당시 구현</th><th>개선안</th></tr></thead><tbody>
+<tr><td>URL 설계</td><td><code>GET /board/modify/{no}</code><br><code>PUT /user/edit</code><br><code>DELETE /user/delete/{id}</code></td><td><code>GET /boards/{id}</code> 재사용<br><code>PUT /users/{id}</code><br><code>DELETE /users/{id}</code><br><span class="why-t">URL은 자원, 동작은 HTTP 메서드로 구분</span></td></tr>
+<tr><td>인증</td><td>로그인 시 JWT 발급</td><td>인터셉터(또는 Spring Security 필터)에서 요청마다 토큰 검증</td></tr>
+<tr><td>인가</td><td>—</td><td>토큰의 사용자 ID와 수정·삭제 대상 ID 일치 여부 확인, 불일치 시 403</td></tr>
+</tbody></table></div></div>
       </div>
     </details>
   </article>
