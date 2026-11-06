@@ -34,7 +34,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px
 a{color:var(--accent);text-underline-offset:3px}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
 h1,h2,h3{text-wrap:balance;line-height:1.3;margin:0}
-.page{max-width:1160px;margin:0 auto}
+.page{max-width:1160px;margin:0 auto;padding-bottom:80px}
 .label{font-weight:700;font-size:12.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--fg)}
 .label .no{font-family:var(--mono);color:var(--accent);margin-right:12px}
 .serif{font-family:var(--serif)}
@@ -274,7 +274,6 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
       <a href="#work" data-view="work">실무 경험</a>
     </nav>
     <div class="hright">
-      <a class="hdl" href="resume.pdf" download="김재형_이력서.pdf" aria-label="이력서 PDF 다운로드"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg><span>이력서 PDF</span></a>
       <button class="theme-btn" id="themeBtn" type="button"></button>
     </div>
   </div>
@@ -531,13 +530,6 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
 
 
 
-<footer>
-  <span>목원대학교 지능로봇공학과 졸업 (2017.03 – 2021.02)</span>
-  <span>SKT ALEPH 네트워크·보안·AI 과정 (2026.09 – 수강 중)</span>
-  <span>SQL 개발자(SQLD)</span>
-  <span>육군 중위 만기전역 (ROTC)</span>
-  <a class="dl dl-sm" href="resume.pdf" download="김재형_이력서.pdf"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>이력서 PDF</a>
-</footer>
 </div>
 
 <script>
@@ -682,7 +674,7 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
     if('IntersectionObserver' in window){
       /* 그룹마다 안쪽 요소를 순서대로 등장시킴 */
       var groups=[];
-      document.querySelectorAll('.sec-head,.co,.overview,.etc,.skills,footer').forEach(function(g){groups.push([g])});
+      document.querySelectorAll('.sec-head,.co,.overview,.etc,.skills').forEach(function(g){groups.push([g])});
       document.querySelectorAll('.proj').forEach(function(g){groups.push([g.querySelector('.proj-head'),g.querySelector('.txt')].concat([].slice.call(g.querySelectorAll('.shots figure'))).concat([g.querySelector('.wide-in')]).filter(Boolean))});
       document.querySelectorAll('.case').forEach(function(g){groups.push([g.querySelector('.proj-head'),g.querySelector('.lede')].concat([].slice.call(g.querySelectorAll('.dec>div'))).concat([g.querySelector('.viz')]).filter(Boolean))});
       var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('rv-wait');io.unobserve(e.target)}})},{rootMargin:'0px 0px -10% 0px'});
