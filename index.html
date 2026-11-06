@@ -199,6 +199,22 @@ details[open] summary::before{content:"−"}
 .act p{margin:0;font-family:var(--serif);color:var(--fg-2);font-size:14.5px;line-height:1.7}
 .act p.act-why{margin-top:6px;color:var(--muted);font-size:13.5px}
 @media (max-width:860px){.acts{grid-template-columns:1fr}}
+.pg{margin:14px 0 6px;border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px;background:var(--bg)}
+.pg-l{font-weight:700;font-size:14px;margin-bottom:4px}
+.pg-l span{font-weight:400;font-size:12.5px;color:var(--muted);margin-left:8px;font-family:var(--mono)}
+.pg-svg{overflow-x:auto}
+.pg svg{display:block;width:100%;min-width:640px;height:auto}
+.pg .nd rect{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.pg .nd.llm>rect:first-child{stroke:var(--accent);stroke-width:2}
+.pg .t{fill:var(--fg);font:600 14px var(--mono);text-anchor:middle}
+.pg .sub{fill:var(--muted);font:12px var(--sans);text-anchor:middle}
+.pg .nd rect.bdg{fill:var(--accent);stroke:none}
+.pg .bdg-t{fill:var(--on-accent);font:700 10px var(--mono);text-anchor:middle}
+.pg .e{fill:none;stroke:var(--muted);stroke-width:1.5}
+.pg .e.alt{stroke-dasharray:5 4}
+.pg .ah{fill:var(--muted)}
+.pg .el{fill:var(--muted);font:12px var(--sans);text-anchor:middle}
+.pts{margin-top:14px}
 .flow{list-style:none;padding:0;margin:8px 0 16px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
 .flow li{position:relative;border:1px solid var(--line);border-radius:8px;padding:10px 11px;font-size:13px;background:var(--bg)}
 .flow li b{display:block;font-size:13.5px}
@@ -395,7 +411,7 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
   </article>
 
   <article class="proj">
-    <header class="proj-head"><h3>JOBVIS · 채용공고 수집·평가 자동화 도구</h3><span class="meta">개인 프로젝트 · 2026.10 · v0.1 → v0.7.6</span></header>
+    <header class="proj-head"><h3>JOBVIS · LLM 기반 채용공고 평가 도구</h3><span class="meta">개인 프로젝트 · 2026.10 · v0.1 → v0.7.6</span></header>
     <div class="proj-grid">
     <div class="txt">
       <ul class="chips"><li>Python</li><li>LangGraph</li><li>Gemini API</li><li>PostgreSQL</li><li>SQLAlchemy</li><li>Docker Compose</li><li>GitHub Actions</li></ul>
@@ -421,14 +437,45 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
   <details class="full">
       <summary>파이프라인 · 설계 결정 자세히 보기</summary>
       <div class="detail d2">
-        <div class="dblock span2"><h4>처리 흐름</h4><ol class="flow">
-            <li><b>① 수집</b><span>robots.txt 준수, 3초 간격</span></li>
-            <li class="llm"><b>② 평가</b><span>4개 항목 점수·근거</span></li>
-            <li><b>③ 형식 검사</b><span>JSON 아니면 실패</span></li>
-            <li><b>④ 계산·한도</b><span>종합 점수, 한도</span></li>
-            <li><b>⑤ 표시</b><span>점수·깎은 이유</span></li>
-          </ol>
-          <p>LLM 표시 단계만 LLM이 담당하고, 나머지는 코드로 처리함</p></div>
+        <div class="dblock span2"><h4>파이프라인 구조 (LangGraph)</h4>
+          <p>수집과 평가를 별도 그래프로 분리하고, 조건 분기로 공고마다 다음 단계를 정함</p>
+          <div class="pg"><div class="pg-l">① 수집 그래프 <span>LLM 호출 없음</span></div><div class="pg-svg"><svg viewBox="0 0 780 196" role="img" aria-label="수집 그래프: fetch, dedupe, pick, detail, save 순서로 진행하고, 본문 실패나 저장 후에는 pick으로 돌아가 다음 공고를 처리">
+<defs><marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<path class="e" d="M128,93 H166" marker-end="url(#ah1)"/>
+<path class="e" d="M286,93 H324" marker-end="url(#ah1)"/>
+<path class="e" d="M444,93 H482" marker-end="url(#ah1)"/>
+<path class="e" d="M602,93 H640" marker-end="url(#ah1)"/>
+<path class="e alt" d="M543,70 V36 H400 V68" marker-end="url(#ah1)"/>
+<text class="el" x="471" y="28">본문 실패 → 저장 없이 다음 공고</text>
+<path class="e" d="M701,116 V162 H385 V118" marker-end="url(#ah1)"/>
+<text class="el" x="543" y="182">저장 후 다음 공고</text>
+<g class="nd"><rect x="10" y="70" width="118" height="46" rx="8"/><text class="t" x="69.0" y="90">fetch</text><text class="sub" x="69.0" y="106">공고 목록 수집</text></g>
+<g class="nd"><rect x="168" y="70" width="118" height="46" rx="8"/><text class="t" x="227.0" y="90">dedupe</text><text class="sub" x="227.0" y="106">중복 공고 제외</text></g>
+<g class="nd"><rect x="326" y="70" width="118" height="46" rx="8"/><text class="t" x="385.0" y="90">pick</text><text class="sub" x="385.0" y="106">공고 1건 선택</text></g>
+<g class="nd"><rect x="484" y="70" width="118" height="46" rx="8"/><text class="t" x="543.0" y="90">detail</text><text class="sub" x="543.0" y="106">본문 가져오기</text></g>
+<g class="nd"><rect x="642" y="70" width="118" height="46" rx="8"/><text class="t" x="701.0" y="90">save</text><text class="sub" x="701.0" y="106">키워드와 함께 저장</text></g>
+</svg></div></div>
+          <div class="pg"><div class="pg-l">② 평가 그래프 <span>LLM은 score 단계만</span></div><div class="pg-svg"><svg viewBox="0 0 780 250" role="img" aria-label="평가 그래프: score_pick에서 조건에 따라 exclude 또는 LLM score로 분기하고, write로 보정 저장한 뒤 다음 공고로 돌아감">
+<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+<path class="e" d="M140,108 C190,108 185,47 228,47" marker-end="url(#ah2)"/>
+<text class="el" x="100" y="74">신입인데 경력 요구</text>
+<path class="e" d="M140,122 C190,122 185,187 228,187" marker-end="url(#ah2)"/>
+<text class="el" x="125" y="166">그 외</text>
+<path class="e" d="M380,187 H468" marker-end="url(#ah2)"/>
+<path class="e" d="M380,47 H720 V228 H75 V140" marker-end="url(#ah2)"/>
+<path class="e" d="M620,187 H720"/>
+<path class="e alt" d="M305,210 V228"/>
+<text class="el" x="400" y="244">처리 후 다음 공고 (평가 실패 시 저장 없이 건너뜀)</text>
+<g class="nd"><rect x="10" y="92" width="130" height="46" rx="8"/><text class="t" x="75.0" y="112">score_pick</text><text class="sub" x="75.0" y="128">평가할 공고 선택</text></g>
+<g class="nd"><rect x="230" y="24" width="150" height="46" rx="8"/><text class="t" x="305.0" y="44">exclude</text><text class="sub" x="305.0" y="60">LLM 호출 없이 제외</text></g>
+<g class="nd llm"><rect x="230" y="164" width="150" height="46" rx="8"/><text class="t" x="305.0" y="184">score</text><text class="sub" x="305.0" y="200">4개 항목 점수·근거</text><rect class="bdg" x="342" y="155" width="32" height="16" rx="4"/><text class="bdg-t" x="358" y="167">LLM</text></g>
+<g class="nd"><rect x="470" y="164" width="150" height="46" rx="8"/><text class="t" x="545.0" y="184">write</text><text class="sub" x="545.0" y="200">신뢰도·상한 보정, 저장</text></g>
+</svg></div></div>
+          <dl class="dec pts">
+            <div><dt>분리</dt><dd>수집과 평가를 별도 그래프로 분리해 수집은 LLM 비용 없이 반복 가능</dd></div>
+            <div><dt>분기</dt><dd>평가가 필요 없는 공고는 조건 분기로 LLM 호출 전에 제외</dd></div>
+            <div><dt>실패</dt><dd>본문 수집·평가가 실패해도 해당 공고만 건너뛰고 전체 실행 유지</dd></div>
+          </dl></div>
         <div class="dblock span2"><h4>설계 결정</h4><div class="d3"><div class="dcard"><h4>LLM 호출 최소화</h4><dl class="dec">
             <div><dt>문제</dt><dd>수집할 때마다 LLM을 호출해 호출 수가 계속 늘어남</dd></div>
             <div><dt>결정</dt><dd>수집은 LLM 없이 처리, 평가는 선택한 공고에만 1회 수행</dd></div>
