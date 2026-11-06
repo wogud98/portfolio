@@ -346,7 +346,7 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
       <ul class="sum">
         <li>장소 주변 아파트의 실거래가를 지도에 표시하는 서비스</li>
         <li>3계층 구조(Controller–Service–Mapper)로 REST API 14개 구현</li>
-        <li>거리 계산 SQL로 반경 안의 아파트 조회, 페이징 처리</li>
+        <li>거리 계산 SQL로 반경 조회, 실거래 내역·게시판 페이징</li>
         <li>JWT 발급 로그인, 로그인 실패 시 401 응답</li>
       </ul>
       <a class="more" href="https://github.com/wogud98/Where-is-my-home" target="_blank" rel="noopener">GitHub 저장소 →</a>
@@ -375,7 +375,7 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
         <div class="dblock"><h4>API 14개</h4><div class="tbl"><table>
             <thead><tr><th>분류</th><th>Method</th><th>Endpoint</th><th>기능</th></tr></thead>
             <tbody>
-              <tr><td>매물</td><td>GET</td><td><code>/house</code></td><td>반경 안의 아파트 (페이징)</td></tr>
+              <tr><td>매물</td><td>GET</td><td><code>/house</code></td><td>반경 안의 아파트</td></tr>
               <tr><td></td><td>GET</td><td><code>/house/area</code></td><td>시·구 이름 자동완성</td></tr>
               <tr><td></td><td>GET</td><td><code>/house/detail</code></td><td>실거래 내역 (페이징)</td></tr>
               <tr><td>회원</td><td>GET</td><td><code>/user/{userId}</code></td><td>아이디 중복 확인</td></tr>
@@ -392,7 +392,7 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
             </tbody>
           </table></div></div>
         <div class="dblock"><h4>반경 안의 아파트만 찾는 SQL</h4>
-          <p class="method">하버사인(Haversine) 공식 · LIMIT 페이징 · COUNT 쿼리</p>
+          <p class="method">구면 코사인 공식 · DB 단 필터링</p>
           <pre><span class="c">-- House.xml (MyBatis)</span>
 <span class="k">SELECT</span> aptCode
 <span class="k">FROM</span> (
@@ -405,13 +405,15 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
 ) <span class="k">AS</span> subquery
 <span class="k">WHERE</span> distance &lt; #{dis}</pre>
           <dl class="dec why">
-            <div><dt>거리 계산</dt><dd>위도·경도 두 지점 사이의 실제 거리(km)를 하버사인 공식으로 계산</dd></div>
+            <div><dt>거리 계산</dt><dd>위도·경도 두 지점 사이의 실제 거리(km)를 구면 코사인 공식으로 계산</dd></div>
             <div><dt>DB 필터</dt><dd>반경 밖 데이터는 DB에서 걸러 애플리케이션으로 가져오지 않음</dd></div>
-            <div><dt>페이징</dt><dd>LIMIT으로 한 페이지 분량만 조회, COUNT로 전체 건수를 구해 페이지 수 계산</dd></div>
           </dl></div>
         <div class="dblock span2"><h4>다시 설계한다면</h4>
           <div class="tbl"><table class="redo"><thead><tr><th>영역</th><th>당시 구현</th><th>개선안</th></tr></thead><tbody>
-<tr><td>URL 설계</td><td><code>GET /board/modify/{no}</code><br><code>PUT /user/edit</code><br><code>DELETE /user/delete/{id}</code></td><td><code>GET /boards/{id}</code> 재사용<br><code>PUT /users/{id}</code><br><code>DELETE /users/{id}</code><br><span class="why-t">URL은 자원, 동작은 HTTP 메서드로 구분</span></td></tr>
+<tr><td>반경 조회 성능</td><td>전체 행에 거리를 계산한 뒤 필터링<br><span class="why-t">행마다 삼각함수 계산, 좌표가 문자열(varchar)이라 인덱스 활용 불가</span></td><td>① 좌표 컬럼을 <code>DECIMAL</code>로 바꿔 <code>(lat, lng)</code> 인덱스를 걸고, 바운딩 박스로 후보를 좁힌 뒤 거리 공식으로 정밀 계산<br>② 사각형 범위 조회로 삼각함수 계산 자체를 없애는 방안</td></tr>
+<tr><td>URL 설계</td><td><code>GET /user/{userId}</code><br><code>POST /user/join</code><br><code>PUT /user/edit</code><br><code>DELETE /user/delete/{userId}</code><br><code>GET /board/modify/{no}</code><br><code>PUT /board</code></td><td><code>GET /users/exists?userId=</code><br><code>POST /users</code><br><code>PUT /users/{id}</code><br><code>DELETE /users/{id}</code><br><code>GET /boards/{id}</code> 재사용 (수정 전용 조회 제거)<br><code>PUT /boards/{id}</code><br><span class="why-t">URL은 자원(복수형), 동작은 HTTP 메서드로 구분</span></td></tr>
+<tr><td>조회수 처리</td><td>글 상세 조회(<code>GET</code>) 때 조회수 증가</td><td>조회수 증가를 <code>GET</code>에서 분리해 <code>PATCH /boards/{id}/hits</code>로 처리<br><span class="why-t">GET은 데이터를 바꾸지 않는 요청, 수정 화면에서도 같은 조회 API 사용</span><br><span class="why-t">중복 집계 방지(사용자·시간 기준)는 추가 검토 대상</span></td></tr>
+
 <tr><td>인증</td><td>로그인 시 JWT 발급</td><td>인터셉터(또는 Spring Security 필터)에서 요청마다 토큰 검증</td></tr>
 <tr><td>인가</td><td>—</td><td>토큰의 사용자 ID와 수정·삭제 대상 ID 일치 여부 확인, 불일치 시 403</td></tr>
 </tbody></table></div></div>
