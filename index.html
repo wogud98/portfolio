@@ -238,6 +238,13 @@ details[open] summary::before{content:"−"}
 .pg .mt{fill:var(--muted);font:600 12px var(--sans);text-anchor:middle}
 .pg .mc{fill:var(--fg-2);font:12.5px var(--sans);text-anchor:middle}
 .pg .mc.ok{fill:var(--accent)}
+.pg .tl{stroke:var(--line);stroke-width:2}
+.pg .dot{fill:var(--bg);stroke:var(--muted);stroke-width:2}
+.pg .dot.own{fill:var(--accent);stroke:var(--accent)}
+.pg .st{fill:var(--fg);font:700 15px var(--sans)}
+.pg .ss{fill:var(--muted);font:13px var(--sans)}
+.pg .br2{fill:none;stroke:var(--line);stroke-width:1.5}
+.pg .ph{fill:var(--fg-2);font:600 12.5px var(--sans);text-anchor:end}
 .viz-cap{margin:6px 0 0;font-size:12.5px;color:var(--muted)}
 .gal{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
 @media (max-width:560px){.bk .pg svg,.viz-svg svg{min-width:520px}.viz-svg{overflow-x:auto}.gal{grid-template-columns:1fr}}
@@ -599,26 +606,7 @@ footer{margin:110px 0 0;padding:24px 0 48px;border-top:1px solid var(--line);fon
     <p class="lede">문서가 없는 레거시 모의엔진에 사업 일정 내 신규 소모 품목 2종 반영</p>
     <div class="case-grid">
       <dl class="dec"><div><dt>역할</dt><dd>요구사항 분석·설계는 팀장·사업단과 함께 수행, 구현과 단위·통합 테스트 담당</dd></div><div><dt>상황</dt><dd>개발 20년이 넘은 레거시, 파일당 1만 줄 이상, 개발 문서·클래스 다이어그램·흐름도 없음</dd></div><div><dt>과제</dt><dd>입력자료 생성 프로그램부터 산정 결과, 모의 로그, 시뮬레이션 결과 조회까지 신규 품목 반영 확인</dd></div><div><dt>결과</dt><dd>신규 품목 2종 반영, 조합별 비교 자료를 사업단에 제공 (세부 수치는 보안상 생략)</dd></div></dl>
-      <div class="viz-svg pg"><svg viewBox="0 0 560 420" role="img" aria-label="신규 품목 2종 반영 방식: 품목별 슬롯 최대 4개 중 미사용 1개에 품목 A를 할당하고, 품목 B는 같은 계열 품목의 슬롯을 함께 쓰도록 조건 분기. 아래는 4가지 경우 검증 표">
-<defs><marker id="sl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="ah" d="M0,0 L10,5 L0,10 z"/></marker></defs>
-<text class="stp-t" x="0" y="20">구현 방식</text>
-<text class="note" x="0" y="44" style="text-anchor:start">품목별 슬롯은 최대 4개 (초기 설계), 그중 3개 사용 중</text>
-<g class="nd"><rect x="20" y="66" width="118" height="50" rx="7"/><text class="t2" x="79.0" y="86">슬롯 1</text><text class="sub" x="79.0" y="102">기존 품목</text></g><g class="nd"><rect x="152" y="66" width="118" height="50" rx="7"/><text class="t2" x="211.0" y="86">슬롯 2</text><text class="sub" x="211.0" y="102">기존 품목</text></g><g class="nd"><rect x="284" y="66" width="118" height="50" rx="7"/><text class="t2" x="343.0" y="86">슬롯 3</text><text class="sub" x="343.0" y="102">기존 품목</text></g><g class="nd empty"><rect x="416" y="66" width="118" height="50" rx="7"/><text class="t2" x="475.0" y="86">슬롯 4</text><text class="sub" x="475.0" y="102">미사용</text></g>
-<g class="nd hi"><rect x="350" y="168" width="150" height="50" rx="7"/><text class="t2" x="425.0" y="188">신규 품목 A</text><text class="sub" x="425.0" y="204">미사용 슬롯 할당</text></g>
-<g class="nd hi"><rect x="130" y="168" width="170" height="50" rx="7"/><text class="t2" x="215.0" y="188">신규 품목 B</text><text class="sub" x="215.0" y="204">같은 계열과 함께 사용</text></g>
-<path class="e" d="M440,166 V120" marker-end="url(#sl)"/>
-<path class="e" d="M215,166 V120" marker-end="url(#sl)"/>
-<text class="ml" x="215" y="240">조건 분기 (추가 품목 확장 고려)</text>
-<text class="stp-t" x="0" y="282">검증 · 4가지 경우 비교</text>
-<g class="mx">
-<rect class="mh" x="0" y="296" width="150" height="34"/><rect class="mh" x="150" y="296" width="205" height="34"/><rect class="mh" x="355" y="296" width="205" height="34"/>
-<rect x="0" y="330" width="150" height="40"/><rect x="150" y="330" width="205" height="40"/><rect x="355" y="330" width="205" height="40"/>
-<rect x="0" y="370" width="150" height="40"/><rect x="150" y="370" width="205" height="40"/><rect x="355" y="370" width="205" height="40"/>
-</g>
-<text class="mt" x="75" y="318">입력 \ 엔진</text><text class="mt" x="252" y="318">기능 추가 전</text><text class="mt" x="457" y="318">기능 추가 후</text>
-<text class="mc" x="75" y="355">신규 품목 없음</text><text class="mc" x="252" y="355">기준 결과</text><text class="mc ok" x="457" y="355">기준과 동일 (기존 기능 영향 없음)</text>
-<text class="mc" x="75" y="395">신규 품목 있음</text><text class="mc" x="252" y="395">신규 품목 미반영</text><text class="mc ok" x="457" y="395">소모량 반영 (기대 방향)</text>
-</svg><p class="viz-cap">약 5개 파일 · 함수 약 50곳 수정·추가 (모의엔진) · 세부 구조는 보안상 생략</p></div>
+      <div class="viz-svg pg"><svg viewBox="0 0 430 420" role="img" aria-label="신규 품목 반영 진행 단계: 분석, 방식 결정, 구현, 단위 테스트, 통합 테스트, 4가지 비교, 시험평가"><path class="tl" d="M110,34 V358"/><path class="br2" d="M70,20 H62 V102 H70"/><text class="ph" x="54" y="65.0">분석·설계</text><path class="br2" d="M70,128 H62 V156 H70"/><text class="ph" x="54" y="146.0">구현</text><path class="br2" d="M70,182 H62 V372 H70"/><text class="ph" x="54" y="281.0">검증</text><circle class="dot own" cx="110" cy="34" r="8"/><text class="st" x="134" y="31">분석</text><text class="ss" x="134" y="49">문서·흐름도 없이 코드로 흐름 파악</text><circle class="dot" cx="110" cy="88" r="8"/><text class="st" x="134" y="85">방식 결정</text><text class="ss" x="134" y="103">미사용 슬롯 할당 · 같은 계열은 조건 분기</text><circle class="dot own" cx="110" cy="142" r="8"/><text class="st" x="134" y="139">구현</text><text class="ss" x="134" y="157">약 5개 파일 · 함수 약 50곳 수정·추가</text><circle class="dot own" cx="110" cy="196" r="8"/><text class="st" x="134" y="193">단위 테스트</text><text class="ss" x="134" y="211">GDB·로그로 값 확인</text><circle class="dot own" cx="110" cy="250" r="8"/><text class="st" x="134" y="247">통합 테스트</text><text class="ss" x="134" y="265">입력자료부터 결과 조회까지 반복 실행</text><circle class="dot own" cx="110" cy="304" r="8"/><text class="st" x="134" y="301">4가지 비교</text><text class="ss" x="134" y="319">입력 × 엔진 버전 조합으로 영향 확인</text><circle class="dot" cx="110" cy="358" r="8"/><text class="st" x="134" y="355">시험평가</text><text class="ss" x="134" y="373">사업단과 결과 확인</text><circle class="dot own" cx="140" cy="404" r="6"/><text class="ss" x="152" y="408">직접 수행</text><circle class="dot" cx="240" cy="404" r="6"/><text class="ss" x="252" y="408">팀장·사업단과 함께</text></svg><p class="viz-cap">약 4개월 · 세부 구조는 보안상 생략</p></div>
     </div>
     <details class="full">
       <summary>행동 · 근거 자세히 보기</summary>
